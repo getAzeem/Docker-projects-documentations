@@ -1,0 +1,123 @@
+# 📘 Project: Apache Web Server with Custom HTML in Docker
+
+## 🔹 Overview
+
+This project builds a Docker image based on **Ubuntu** that installs **Apache HTTP Server** and serves a custom `index.html` page. The container runs Apache in the foreground and maps port **80 (container)** to **7070 (host)** so the web page is accessible from the host machine.
+
+---
+
+## 🔹 Project Structure
+
+```
+project-2/
+├── Dockerfile
+└── index.html
+```
+
+* **Dockerfile** → Instructions to build the image.
+* **index.html** → Custom web page to be served by Apache.
+
+---
+
+## 🔹 Dockerfile
+
+```dockerfile
+FROM ubuntu:latest
+RUN apt-get update && apt-get install -y apache2
+COPY index.html /var/www/html/index.html
+EXPOSE 80
+CMD ["apache2ctl", "-D", "FOREGROUND"]
+```
+
+### Explanation:
+
+* `FROM ubuntu:latest` → Base image.
+* `RUN apt-get update && apt-get install -y apache2` → Install Apache.
+* `COPY index.html /var/www/html/index.html` → Copy custom HTML file into Apache’s default web root.
+* `EXPOSE 80` → Document that the container listens on port 80.
+* `CMD ["apache2ctl", "-D", "FOREGROUND"]` → Run Apache in foreground (keeps container alive).
+
+---
+
+## 🔹 Build the Image
+
+From inside the project directory:
+
+```bash
+sudo docker build -t my-apache-app .
+```
+
+* `-t my-apache-app` → Names the image `my-apache-app`.
+* `.` → Current directory as build context (so it can find Dockerfile + index.html).
+
+---
+
+## 🔹 Run the Container
+
+```bash
+sudo docker run -dit -p 7070:80 --name webserver my-apache-app
+```
+
+* `-d` → Detached mode (runs in background).
+* `-i -t` → Interactive with terminal (useful for exec later).
+* `-p 7070:80` → Maps host port **7070** → container port **80**.
+* `--name webserver` → Easy-to-use container name.
+
+---
+
+## 🔹 Test the Setup
+
+Open browser on host machine:
+
+```
+http://localhost:7070
+```
+
+👉 You should see the content of `index.html`.
+
+---
+
+## 🔹 Useful Commands
+
+* **List containers**:
+
+  ```bash
+  sudo docker ps -a
+  ```
+* **Access running container shell**:
+
+  ```bash
+  sudo docker exec -it webserver bash
+  ```
+* **Check logs**:
+
+  ```bash
+  sudo docker logs webserver
+  ```
+* **Stop container**:
+
+  ```bash
+  sudo docker stop webserver
+  ```
+* **Start container again**:
+
+  ```bash
+  sudo docker start webserver
+  ```
+
+---
+
+## 🔹 Notes
+
+* `index.html` changes require **rebuilding the image** unless volumes are used.
+* To update without rebuild, you can copy a new file:
+
+  ```bash
+  sudo docker cp index.html webserver:/var/www/html/index.html
+  ```
+
+---
+
+✅ With this setup, your Apache web server in Docker serves your custom HTML on `http://localhost:7070`.
+
+---
