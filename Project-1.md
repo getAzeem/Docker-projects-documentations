@@ -1,7 +1,3 @@
-Of course\! Here is a simple and handy guide for Project 1, including the specific notes you requested.
-
------
-
 ## **Project 1: Secure SSH Connection Between Two Docker Containers**
 
 This guide walks you through setting up a secure shell (SSH) connection from one Ubuntu container (the client) to another (the server).
